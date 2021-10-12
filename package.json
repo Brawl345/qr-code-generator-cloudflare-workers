@@ -1,0 +1,29 @@
+{
+  "name": "qr-code-generator",
+  "version": "1.0.0",
+  "description": "QR Code generator for CloudFlare Workers",
+  "repository": {
+    "url": "https://github.com/Brawl345/qr-code-generator-cloudflare-workers"
+  },
+  "author": {
+    "name": "Brawl345"
+  },
+  "license": "Unlicense",
+  "main": "index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "format": "prettier \"**/*.js\"",
+    "lint": "eslint --ignore-path .gitignore **/*.js",
+    "publish": "wrangler publish"
+  },
+  "devDependencies": {
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.22.1",
+    "prettier": "^2.4.1"
+  },
+  "dependencies": {
+    "qr-image": "^3.2.0"
+  }
+}
