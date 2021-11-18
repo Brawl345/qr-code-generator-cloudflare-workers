@@ -5,25 +5,28 @@ import { imageSync } from 'qr-image';
  * @returns {Promise<Response>} - The converted QR code image
  */
 async function generate(text) {
-  const headers = { 'Content-Type': 'image/png' };
+  const headers = {
+    'Content-Type': 'image/png',
+    'cache-control': 'public, max-age=604800',
+  };
   const qrImg = imageSync(text);
   return new Response(qrImg, { headers });
 }
 
 /**
- * @param {Request} request
+ * @param {Event} event
  */
-async function handleRequest(request) {
+async function handleRequest(event) {
   let text;
-  switch (request.method) {
+  switch (event.request.method) {
     case 'GET': {
-      const { searchParams } = new URL(request.url);
+      const { searchParams } = new URL(event.request.url);
       text = searchParams.get('text');
       break;
     }
     case 'POST': {
       try {
-        const res = await request.json();
+        const res = await event.request.json();
         text = res.text;
         break;
       } catch (e) {
@@ -38,9 +41,16 @@ async function handleRequest(request) {
     return new Response('"text" parameter is missing.', { status: 400 });
   }
 
-  return generate(text);
+  const cache = caches.default;
+  let response = await cache.match(event.request);
+  if (!response) {
+    response = await generate(text);
+    event.waitUntil(cache.put(event.request, response.clone()));
+  }
+
+  return response;
 }
 
 addEventListener('fetch', (event) => {
-  event.respondWith(handleRequest(event.request));
+  event.respondWith(handleRequest(event));
 });
