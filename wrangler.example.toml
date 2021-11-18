@@ -9,5 +9,6 @@ compatibility_date = "2021-11-17"
 format = "service-worker"
 
 [env.production]
+name = "qr-prod"
 route = "qr.example.com/*"
 zone_id = "fill-me"
